@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest'
 import {
   AcrossRepaymentsRelayerContext,
   functionSelectorToAdapterCallMap,
-  parseAddress,
   type RebalancingConfig,
   replaceRepaymentDestinations,
 } from '../src'
+import { parseAddress } from '../src/address'
 
 const ROUTER_ADDRESS_DEV = parseAddress(contractAddressesDev['*'].router)
 const INTENT_EXECUTOR_ADDRESS_DEV = parseAddress(

@@ -6,7 +6,6 @@ import {
   InvalidAddressError,
   isRelayerError,
   isValidationError,
-  parseAddress,
   type RebalancingConfig,
   RelayerError,
   replaceRepaymentDestinations,
@@ -14,6 +13,7 @@ import {
   UnsupportedDestinationError,
   UnsupportedRouteCallError,
 } from '../src'
+import { parseAddress } from '../src/address'
 import { decodeRouterCall } from '../src/router'
 
 const ROUTER_ADDRESS_DEV = parseAddress(contractAddressesDev['*'].router)

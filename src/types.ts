@@ -3,8 +3,9 @@ import type { Address } from 'viem'
 declare const __brand: unique symbol
 
 /**
- * Branded Ethereum address type.
+ * Internal branded Ethereum address type.
  * Lowercase-normalized and intersects with viem's Address type.
+ * @internal
  */
 export type EthAddress = Address & { [__brand]: 'EthAddress' }
 
@@ -18,7 +19,7 @@ export type EthAddress = Address & { [__brand]: 'EthAddress' }
  *   to a single chain.
  */
 export type RepaymentDestination = {
-  address: EthAddress
+  address: Address
   chain?: number
 }
 
@@ -28,6 +29,15 @@ export type RepaymentDestination = {
  * addresses from `@rhinestone/shared-configs`.
  */
 export type RebalancingConfig = {
-  routerAddress: EthAddress
-  intentExecutorAddress: EthAddress
+  routerAddress: Address
+  intentExecutorAddress: Address
+}
+
+/**
+ * Internal version of RepaymentDestination with normalized addresses.
+ * @internal
+ */
+export type InternalRepaymentDestination = {
+  address: EthAddress
+  chain?: number
 }

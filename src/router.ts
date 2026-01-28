@@ -9,7 +9,7 @@ import {
 } from 'viem'
 import { adapters } from './adapters'
 import { UnsupportedRouteCallError } from './errors'
-import type { EthAddress, RepaymentDestination } from './types'
+import type { EthAddress, InternalRepaymentDestination } from './types'
 
 const supportedRouteCalls = [
   'routeClaim',
@@ -55,10 +55,11 @@ export function decodeRouterCall(data: Hex): DecodeRouterCallReturnType {
  * Function signature for adapter-specific relayer context rewrite functions.
  * Takes the original encoded context and a repayment destination,
  * returns the rewritten encoded context.
+ * @internal
  */
 export type RelayerContextRewrite = (
   original: Hex,
-  repayment: RepaymentDestination,
+  repayment: InternalRepaymentDestination,
 ) => Hex
 
 /**
@@ -72,10 +73,11 @@ export type AdapterCall = {
 
 /**
  * No-op rewrite for adapters that don't need repayment context modification.
+ * @internal
  */
 export const NoRelayerContext: RelayerContextRewrite = (
   original: Hex,
-  _repayment: RepaymentDestination,
+  _repayment: InternalRepaymentDestination,
 ): Hex => {
   return original
 }
@@ -97,10 +99,11 @@ const acrossRelayerContext = [
  *
  * When `repayment.chain` is provided, all tuples are updated to that chain.
  * When omitted, each tuple preserves its original repaymentChain.
+ * @internal
  */
 export const AcrossRepaymentsRelayerContext: RelayerContextRewrite = (
   original: Hex,
-  repayment: RepaymentDestination,
+  repayment: InternalRepaymentDestination,
 ): Hex => {
   const decoded = decodeAbiParameters(acrossRelayerContext, original)
   const contexts = decoded[0] as {
@@ -123,10 +126,11 @@ const sameChainRelayerContext = ['address']
 /**
  * Rewrites SameChain adapter relayer context.
  * Simply encodes the new repayment address.
+ * @internal
  */
 export const SameChainRepaymentsRelayerContext: RelayerContextRewrite = (
   _original: Hex,
-  repayment: RepaymentDestination,
+  repayment: InternalRepaymentDestination,
 ): Hex => {
   return encodePacked(sameChainRelayerContext, [repayment.address])
 }
@@ -136,10 +140,11 @@ const ecoRelayerContext = ['address']
 /**
  * Rewrites Eco adapter relayer context.
  * Simply encodes the new repayment address (claimant).
+ * @internal
  */
 export const EcoRepaymentsRelayerContext: RelayerContextRewrite = (
   _original: Hex,
-  repayment: RepaymentDestination,
+  repayment: InternalRepaymentDestination,
 ): Hex => {
   return encodePacked(ecoRelayerContext, [repayment.address])
 }

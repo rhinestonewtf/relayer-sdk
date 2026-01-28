@@ -1,5 +1,6 @@
 import { contractAddresses, routerAbi } from '@rhinestone/shared-configs'
 import {
+  type Address,
   decodeAbiParameters,
   encodeFunctionData,
   type Hex,
@@ -17,7 +18,7 @@ import {
   NoRelayerContext,
 } from './router'
 import type {
-  EthAddress,
+  InternalRepaymentDestination,
   RebalancingConfig,
   RepaymentDestination,
 } from './types'
@@ -49,37 +50,46 @@ const DEFAULT_INTENT_EXECUTOR_ADDRESS = parseAddress(
  * const rewritten = replaceRepaymentDestinations(
  *   routerAddress,
  *   originalCalldata,
- *   { address: myRelayerAddress },
+ *   { address: '0x...' },
  * )
  *
  * // With custom config (e.g., dev deployment)
  * const rewritten = replaceRepaymentDestinations(
  *   routerAddress,
  *   originalCalldata,
- *   { address: myRelayerAddress },
+ *   { address: '0x...' },
  *   {
- *     routerAddress: parseAddress(devContracts.router),
- *     intentExecutorAddress: parseAddress(devContracts.intentExecutor),
+ *     routerAddress: '0x...',
+ *     intentExecutorAddress: '0x...',
  *   },
  * )
  * ```
  */
 export function replaceRepaymentDestinations(
-  to: EthAddress,
+  to: Address,
   data: Hex,
   destination: RepaymentDestination,
   config?: RebalancingConfig,
 ): Hex {
-  const routerAddress = config?.routerAddress ?? DEFAULT_ROUTER_ADDRESS
-  const intentExecutorAddress =
-    config?.intentExecutorAddress ?? DEFAULT_INTENT_EXECUTOR_ADDRESS
+  // Normalize addresses internally
+  const normalizedTo = parseAddress(to)
+  const routerAddress = config?.routerAddress
+    ? parseAddress(config.routerAddress)
+    : DEFAULT_ROUTER_ADDRESS
+  const intentExecutorAddress = config?.intentExecutorAddress
+    ? parseAddress(config.intentExecutorAddress)
+    : DEFAULT_INTENT_EXECUTOR_ADDRESS
+  const normalizedDestination: InternalRepaymentDestination = {
+    address: parseAddress(destination.address),
+    chain: destination.chain,
+  }
 
-  if (to === intentExecutorAddress) {
+  if (normalizedTo === intentExecutorAddress) {
     // Intent executor calls don't need repayment context modification
     return data
   }
 
-  if (to === routerAddress) {
+  if (normalizedTo === routerAddress) {
     const {
       functionName: routerFunctionName,
       args: routerCallArgs,
@@ -126,7 +136,10 @@ export function replaceRepaymentDestinations(
           })
         }
         const currentContext = relayerContextData[contextIndex]
-        relayerContextData[contextIndex] = rewriteF(currentContext, destination)
+        relayerContextData[contextIndex] = rewriteF(
+          currentContext,
+          normalizedDestination,
+        )
         contextIndex++
       }
     }

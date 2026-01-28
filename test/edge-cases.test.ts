@@ -1,11 +1,8 @@
 import { contractAddressesDev, routerAbi } from '@rhinestone/shared-configs'
 import { encodeFunctionData } from 'viem'
 import { describe, expect, it } from 'vitest'
-import {
-  parseAddress,
-  type RebalancingConfig,
-  replaceRepaymentDestinations,
-} from '../src'
+import { type RebalancingConfig, replaceRepaymentDestinations } from '../src'
+import { parseAddress } from '../src/address'
 
 const ROUTER_ADDRESS_DEV = parseAddress(contractAddressesDev['*'].router)
 const INTENT_EXECUTOR_ADDRESS_DEV = parseAddress(

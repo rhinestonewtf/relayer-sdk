@@ -1,8 +1,6 @@
 // Adapters
 // biome-ignore lint/performance/noBarrelFile: Package entry point requires re-exports
 export { adapters } from './adapters'
-// Utilities
-export { parseAddress } from './address'
 // Errors
 export {
   ContextMismatchError,
@@ -30,8 +28,4 @@ export {
   SameChainRepaymentsRelayerContext,
 } from './router'
 // Types
-export type {
-  EthAddress,
-  RebalancingConfig,
-  RepaymentDestination,
-} from './types'
+export type { RebalancingConfig, RepaymentDestination } from './types'
