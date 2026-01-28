@@ -8,6 +8,7 @@ import {
   toFunctionSelector,
 } from 'viem'
 import { adapters } from './adapters'
+import { UnsupportedRouteCallError } from './errors'
 import type { EthAddress, RepaymentDestination } from './types'
 
 const supportedRouteCalls = [
@@ -39,9 +40,9 @@ export function decodeRouterCall(data: Hex): DecodeRouterCallReturnType {
     data,
   })
   if (!supportedRouteCalls.includes(routerCall.functionName)) {
-    throw new Error(
-      `Unsupported route function call: ${routerCall.functionName}`,
-    )
+    throw new UnsupportedRouteCallError({
+      functionName: routerCall.functionName,
+    })
   }
   const isOptimizedRouteCall = routerCall.functionName.startsWith('optimized')
   return {

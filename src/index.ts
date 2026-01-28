@@ -3,6 +3,17 @@
 export { adapters } from './adapters'
 // Utilities
 export { parseAddress } from './address'
+// Errors
+export {
+  ContextMismatchError,
+  InvalidAddressError,
+  isRelayerError,
+  isValidationError,
+  RelayerError,
+  UnsupportedAdapterError,
+  UnsupportedDestinationError,
+  UnsupportedRouteCallError,
+} from './errors'
 export { replaceRepaymentDestinations } from './rebalancing'
 export type {
   AdapterCall,

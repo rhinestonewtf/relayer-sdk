@@ -7,6 +7,11 @@ import {
 } from 'viem'
 import { parseAddress } from './address'
 import {
+  ContextMismatchError,
+  UnsupportedAdapterError,
+  UnsupportedDestinationError,
+} from './errors'
+import {
   decodeRouterCall,
   functionSelectorToAdapterCallMap,
   NoRelayerContext,
@@ -99,9 +104,11 @@ export function replaceRepaymentDestinations(
       const adapterCall = functionSelectorToAdapterCallMap[selector]
 
       if (!adapterCall) {
-        throw new Error(
-          `Unknown adapter call at ${i}, selector: ${selector} for ${routerFunctionName}`,
-        )
+        throw new UnsupportedAdapterError({
+          selector,
+          index: i,
+          functionName: routerFunctionName,
+        })
       }
 
       adapterCalls.push({
@@ -112,9 +119,11 @@ export function replaceRepaymentDestinations(
       const rewriteF = adapterCall.rewriteRelayerContext
       if (rewriteF !== NoRelayerContext) {
         if (contextIndex >= relayerContextData.length) {
-          throw new Error(
-            `Mismatch: Adapter call ${adapterCall.adapterName}:${adapterCall.functionName} at index ${i} requires a relayer context, but none are available for ${routerFunctionName}. Call list ${JSON.stringify(adapterCalls, undefined, 2)}`,
-          )
+          throw new ContextMismatchError({
+            expected: contextIndex + 1,
+            actual: relayerContextData.length,
+            adapterCalls,
+          })
         }
         const currentContext = relayerContextData[contextIndex]
         relayerContextData[contextIndex] = rewriteF(currentContext, destination)
@@ -123,9 +132,11 @@ export function replaceRepaymentDestinations(
     }
 
     if (contextIndex !== relayerContextData.length) {
-      throw new Error(
-        `Data mismatch: More contexts were provided than were consumed by the adapter calls for ${routerFunctionName}. Call list: ${JSON.stringify(adapterCalls, undefined, 2)}`,
-      )
+      throw new ContextMismatchError({
+        expected: contextIndex,
+        actual: relayerContextData.length,
+        adapterCalls,
+      })
     }
 
     return encodeFunctionData({
@@ -135,5 +146,5 @@ export function replaceRepaymentDestinations(
     })
   }
 
-  throw new Error('Unsupported destination')
+  throw new UnsupportedDestinationError({ address: to })
 }

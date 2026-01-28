@@ -1,4 +1,5 @@
 import { type Address, isAddress } from 'viem'
+import { InvalidAddressError } from './errors'
 import type { EthAddress } from './types'
 
 /**
@@ -11,7 +12,7 @@ import type { EthAddress } from './types'
  */
 export function parseAddress(value: Address | string): EthAddress {
   if (!isAddress(value, { strict: false })) {
-    throw new Error(`Invalid Ethereum address: ${value}`)
+    throw new InvalidAddressError({ value })
   }
   return value.toLowerCase() as EthAddress
 }
