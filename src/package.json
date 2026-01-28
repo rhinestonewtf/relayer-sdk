@@ -1,0 +1,46 @@
+{
+  "name": "@rhinestone/relayer-sdk",
+  "version": "0.1.0",
+  "description": "SDK for rewriting repayment destinations in router-encoded intent calldata",
+  "author": {
+    "name": "Rhinestone",
+    "url": "https://rhinestone.dev"
+  },
+  "keywords": [
+    "ethereum",
+    "rhinestone",
+    "relayer",
+    "intent",
+    "rebalancing"
+  ],
+  "license": "MIT",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js",
+      "require": "./dist/src/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://docs.rhinestone.dev/",
+  "bugs": {
+    "url": "https://github.com/rhinestonewtf/relayer-sdk/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhinestonewtf/relayer-sdk.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@rhinestone/shared-configs": "1.4.74"
+  },
+  "peerDependencies": {
+    "viem": "^2.38.0"
+  }
+}
