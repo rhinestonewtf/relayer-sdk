@@ -177,6 +177,7 @@ const adapterRelayerContextMap: {
   ecoAbi: lookup(EcoRepaymentsRelayerContext),
   acrossAbi: lookup(AcrossRepaymentsRelayerContext),
   intentExecutorAbi: lookup(NoRelayerContext),
+  intentExecutorWithGasRefundAbi: lookup(SameChainRepaymentsRelayerContext),
   relayAbi: lookup(NoRelayerContext),
 }
 

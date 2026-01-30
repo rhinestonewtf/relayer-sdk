@@ -17,6 +17,7 @@ import {
   functionSelectorToAdapterCallMap,
   NoRelayerContext,
 } from './router'
+import { rewriteStandaloneExecutorCall } from './standaloneExecutor'
 import type {
   InternalRepaymentDestination,
   RebalancingConfig,
@@ -85,8 +86,7 @@ export function replaceRepaymentDestinations(
   }
 
   if (normalizedTo === intentExecutorAddress) {
-    // Intent executor calls don't need repayment context modification
-    return data
+    return rewriteStandaloneExecutorCall(data, normalizedDestination)
   }
 
   if (normalizedTo === routerAddress) {
