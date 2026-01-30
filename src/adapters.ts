@@ -3,6 +3,7 @@ import {
   directRouteAbi,
   ecoAdapterAbi,
   intentExecutorAdapterAbi,
+  intentExecutorAdapterGasRefundAbi,
   multiCallAbi,
   relayAdapterAbi,
   sameChainAdapterAbi,
@@ -21,5 +22,6 @@ export const adapters = {
   sameChainAbi: sameChainAdapterAbi,
   acrossAbi: acrossAdapterAbi,
   intentExecutorAbi: intentExecutorAdapterAbi,
+  intentExecutorWithGasRefundAbi: intentExecutorAdapterGasRefundAbi,
   relayAbi: relayAdapterAbi,
 } as const
