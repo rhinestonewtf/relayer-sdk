@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@rhinestone/shared-configs':
-        specifier: 1.4.103
-        version: 1.4.103(typescript@5.9.3)(viem@2.46.1(typescript@5.9.3))
+        specifier: 1.4.105
+        version: 1.4.105(typescript@5.9.3)(viem@2.46.1(typescript@5.9.3))
       viem:
         specifier: ^2.38.0
         version: 2.46.1(typescript@5.9.3)
@@ -32,8 +32,8 @@ packages:
     resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
     engines: {node: ^14.21.3 || >=16}
 
-  '@rhinestone/shared-configs@1.4.103':
-    resolution: {integrity: sha512-SdEDRgU29n/fb3rZrcM+sDnt0SwvM5cJlXrnJHNUBEr3khPSBZNB5TXbXLo729HKheu98s33TD+AYo2wOq/73w==}
+  '@rhinestone/shared-configs@1.4.105':
+    resolution: {integrity: sha512-ZFW5kJ1CR4NPxHiVRAJSVZalBNvvnJN6xawtcCa5Z6aYN87hNi5ZFlrsc4ytN2wMT5CT2/6sLagAl6xZjsbz3Q==}
     peerDependencies:
       typescript: ^5
       viem: ^2.40.1
@@ -111,7 +111,7 @@ snapshots:
 
   '@noble/hashes@1.8.0': {}
 
-  '@rhinestone/shared-configs@1.4.103(typescript@5.9.3)(viem@2.46.1(typescript@5.9.3))':
+  '@rhinestone/shared-configs@1.4.105(typescript@5.9.3)(viem@2.46.1(typescript@5.9.3))':
     dependencies:
       typescript: 5.9.3
       viem: 2.46.1(typescript@5.9.3)
