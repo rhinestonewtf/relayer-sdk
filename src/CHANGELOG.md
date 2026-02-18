@@ -1,5 +1,15 @@
 # @rhinestone/relayer-sdk
 
+## 0.3.0
+
+### Minor Changes
+
+- 2ecaeae: Bump shared configs
+
+### Patch Changes
+
+- c8b340a: Patch release v0.2.1
+
 ## 0.2.0
 
 ### Minor Changes
