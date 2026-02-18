@@ -37,10 +37,10 @@
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {
-    "@rhinestone/shared-configs": "1.4.105"
-  },
   "peerDependencies": {
     "viem": "^2.38.0"
+  },
+  "dependencies": {
+    "@rhinestone/shared-configs": "^1.4.105"
   }
 }
