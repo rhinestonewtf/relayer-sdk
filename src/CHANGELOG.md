@@ -1,5 +1,11 @@
 # @rhinestone/relayer-sdk
 
+## 0.3.2
+
+### Patch Changes
+
+- c7b3983: relax @rhinestone/shared-configs to caret range
+
 ## 0.3.1
 
 ### Patch Changes
