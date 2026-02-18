@@ -1,5 +1,11 @@
 # @rhinestone/relayer-sdk
 
+## 0.3.1
+
+### Patch Changes
+
+- 24d3951: bump @rhinestone/shared-configs
+
 ## 0.3.0
 
 ### Minor Changes
