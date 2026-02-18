@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@rhinestone/shared-configs':
-        specifier: 1.4.105
+        specifier: ^1.4.105
         version: 1.4.105(typescript@5.9.3)(viem@2.46.1(typescript@5.9.3))
       viem:
         specifier: ^2.38.0
