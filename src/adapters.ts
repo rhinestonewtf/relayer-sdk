@@ -8,6 +8,7 @@ import {
   relayAdapterAbi,
   sameChainAdapterAbi,
   singleCallAbi,
+  singlecallAdapterAbi,
 } from '@rhinestone/shared-configs'
 
 /**
@@ -16,6 +17,7 @@ import {
  */
 export const adapters = {
   singleCallAbi,
+  singlecallAdapterAbi,
   multiCallAbi,
   directRouteAbi,
   ecoAbi: ecoAdapterAbi,

@@ -168,6 +168,7 @@ const adapterRelayerContextMap: {
   [K in keyof typeof adapters]: RewriteLookup
 } = {
   singleCallAbi: lookup(NoRelayerContext),
+  singlecallAdapterAbi: lookup(NoRelayerContext),
   multiCallAbi: lookup(NoRelayerContext, {
     multicall_handleJITClaim: SameChainRepaymentsRelayerContext,
     multicall_handleFill: SameChainRepaymentsRelayerContext,
