@@ -8,7 +8,8 @@ import {
   relayAdapterAbi,
   sameChainAdapterAbi,
   singleCallAbi,
-} from '@rhinestone/shared-configs'
+  singlecallAdapterAbi,
+} from '@rhinestone/shared-configs';
 
 /**
  * Collection of adapter ABIs used by the router.
@@ -16,6 +17,7 @@ import {
  */
 export const adapters = {
   singleCallAbi,
+  singlecallAdapterAbi,
   multiCallAbi,
   directRouteAbi,
   ecoAbi: ecoAdapterAbi,
@@ -24,4 +26,4 @@ export const adapters = {
   intentExecutorAbi: intentExecutorAdapterAbi,
   intentExecutorWithGasRefundAbi: intentExecutorAdapterGasRefundAbi,
   relayAbi: relayAdapterAbi,
-} as const
+} as const;
