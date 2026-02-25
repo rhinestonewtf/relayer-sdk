@@ -1,6 +1,6 @@
 {
   "name": "@rhinestone/relayer-sdk",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "SDK for rewriting repayment destinations in router-encoded intent calldata",
   "author": {
     "name": "Rhinestone",
