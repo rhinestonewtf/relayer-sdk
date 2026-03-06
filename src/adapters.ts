@@ -5,6 +5,7 @@ import {
   intentExecutorAdapterAbi,
   intentExecutorAdapterGasRefundAbi,
   multiCallAbi,
+  oftFeeAdapterAbi,
   relayAdapterAbi,
   sameChainAdapterAbi,
   singleCallAbi,
@@ -26,4 +27,5 @@ export const adapters = {
   intentExecutorAbi: intentExecutorAdapterAbi,
   intentExecutorWithGasRefundAbi: intentExecutorAdapterGasRefundAbi,
   relayAbi: relayAdapterAbi,
+  oftFeeAbi: oftFeeAdapterAbi,
 } as const
