@@ -1,5 +1,11 @@
 # @rhinestone/relayer-sdk
 
+## 0.3.5
+
+### Patch Changes
+
+- 1f57224: Add OFTFeeAdapter abi
+
 ## 0.3.4
 
 ### Patch Changes
