@@ -180,6 +180,7 @@ const adapterRelayerContextMap: {
   intentExecutorAbi: lookup(NoRelayerContext),
   intentExecutorWithGasRefundAbi: lookup(SameChainRepaymentsRelayerContext),
   relayAbi: lookup(NoRelayerContext),
+  oftFeeAbi: lookup(NoRelayerContext),
 }
 
 function buildSelectorToAdapterCallMap(): { [key: Hex]: AdapterCall } {
