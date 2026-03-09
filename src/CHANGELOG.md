@@ -1,5 +1,11 @@
 # @rhinestone/relayer-sdk
 
+## 0.3.6
+
+### Patch Changes
+
+- def0fd1: update shared configs
+
 ## 0.3.5
 
 ### Patch Changes
