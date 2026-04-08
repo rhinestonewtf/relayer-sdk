@@ -1,10 +1,88 @@
 name: Update shared-configs
+
 on:
   repository_dispatch:
     types: [shared-configs-update]
   workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   upgrade-shared-configs:
-    uses: rhinestonewtf/yeet/.github/workflows/reusable-bump-dependency.yml@main
-    with:
-      version: ${{ github.event.client_payload.version || '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Resolve version
+        id: resolve
+        shell: bash
+        run: |
+          VERSION="${{ github.event.client_payload.version }}"
+          if [ -z "$VERSION" ]; then
+            VERSION=$(npm view @rhinestone/shared-configs version)
+            echo "Auto-detected latest version: ${VERSION}"
+          fi
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "branch=upgrade/shared-configs-${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Check for existing branch
+        id: check
+        run: |
+          if git ls-remote --heads origin "${{ steps.resolve.outputs.branch }}" | grep -q .; then
+            echo "Branch ${{ steps.resolve.outputs.branch }} already exists, skipping"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install dependencies
+        if: steps.check.outputs.skip != 'true'
+        run: bun install --frozen-lockfile
+
+      - name: Bump dependency
+        if: steps.check.outputs.skip != 'true'
+        run: |
+          git checkout -b "${{ steps.resolve.outputs.branch }}"
+          bun add @rhinestone/shared-configs@${{ steps.resolve.outputs.version }}
+
+      - name: Commit and push
+        if: steps.check.outputs.skip != 'true'
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json bun.lock
+
+          if git diff --cached --quiet; then
+            echo "Already up to date"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          VERSION="${{ steps.resolve.outputs.version }}"
+          git commit -m "upgrade(shared-configs): ${VERSION}"
+          git push origin "${{ steps.resolve.outputs.branch }}"
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+
+      - name: Create PR
+        if: steps.check.outputs.skip != 'true' && steps.commit.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ steps.resolve.outputs.version }}"
+          gh pr create \
+            --title "upgrade(shared-configs): ${VERSION}" \
+            --body "Automated bump of \`@rhinestone/shared-configs\` to \`${VERSION}\`.
+
+          **Links:**
+          - [Release tag \`v${VERSION}\`](https://github.com/rhinestonewtf/yeet/releases/tag/v${VERSION})
+          - [npm package](https://www.npmjs.com/package/@rhinestone/shared-configs/v/${VERSION})
+
+          ---
+          *Created automatically by [yeet](https://github.com/rhinestonewtf/yeet) publish workflow.*" \
+            --head "${{ steps.resolve.outputs.branch }}"
