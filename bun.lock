@@ -1,8 +1,10 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "dependencies": {
+        "@rhinestone/shared-configs": "1.5.1",
         "viem": "^2.38.0",
       },
       "devDependencies": {
@@ -16,7 +18,7 @@
     },
     "src": {
       "name": "@rhinestone/relayer-sdk",
-      "version": "0.3.5",
+      "version": "0.3.6",
       "dependencies": {
         "@rhinestone/shared-configs": "^1.4.122",
       },
@@ -160,7 +162,7 @@
 
     "@rhinestone/relayer-sdk": ["@rhinestone/relayer-sdk@workspace:src"],
 
-    "@rhinestone/shared-configs": ["@rhinestone/shared-configs@1.4.122", "", { "peerDependencies": { "typescript": "^5", "viem": "^2.40.1" } }, "sha512-DYI1Zuec/EakZeLk24lWtQwZiQRr81ub2zTNja8vVotg9xgidm+1RRilbgKBbKigOeX/eOoyWUlf4fdIWhd3Yg=="],
+    "@rhinestone/shared-configs": ["@rhinestone/shared-configs@1.5.1", "", { "peerDependencies": { "typescript": "^5", "viem": "^2.40.1" } }, "sha512-RtbhW8oQPZeipov1NF3pd4tXvR+C5cac7yhYC0pd2aoE3iBb53U256yvmfyAJ9/s9E0UauT1sNFC/LrLJC+uvA=="],
 
     "@rollup/rollup-android-arm-eabi": ["@rollup/rollup-android-arm-eabi@4.57.0", "", { "os": "android", "cpu": "arm" }, "sha512-tPgXB6cDTndIe1ah7u6amCI1T0SsnlOuKgg10Xh3uizJk4e5M1JGaUMk7J4ciuAUcFpbOiNhm2XIjP9ON0dUqA=="],
 
@@ -497,6 +499,8 @@
     "@manypkg/get-packages/@changesets/types": ["@changesets/types@4.1.0", "", {}, "sha512-LDQvVDv5Kb50ny2s25Fhm3d9QSZimsoUGBsUioj6MC3qbMUCuC8GPIvk/M6IvXx3lYhAs0lwWUQLb+VIEUCECw=="],
 
     "@manypkg/get-packages/fs-extra": ["fs-extra@8.1.0", "", { "dependencies": { "graceful-fs": "^4.2.0", "jsonfile": "^4.0.0", "universalify": "^0.1.0" } }, "sha512-yhlQgA6mnOJUKOsRUFsgJdQCvkKhcz8tlZG5HBQfReYZy46OwLcY+Zia0mtdHsOo9y/hP+CxMN0TU9QxoOtG4g=="],
+
+    "@rhinestone/relayer-sdk/@rhinestone/shared-configs": ["@rhinestone/shared-configs@1.4.122", "", { "peerDependencies": { "typescript": "^5", "viem": "^2.40.1" } }, "sha512-DYI1Zuec/EakZeLk24lWtQwZiQRr81ub2zTNja8vVotg9xgidm+1RRilbgKBbKigOeX/eOoyWUlf4fdIWhd3Yg=="],
 
     "micromatch/picomatch": ["picomatch@2.3.1", "", {}, "sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA=="],
 
