@@ -1,5 +1,11 @@
 # @rhinestone/relayer-sdk
 
+## 0.3.7
+
+### Patch Changes
+
+- 718fcdb: update shared configs
+
 ## 0.3.6
 
 ### Patch Changes
