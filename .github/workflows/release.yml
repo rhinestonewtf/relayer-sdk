@@ -17,7 +17,7 @@ jobs:
           version: 9
       - run: bun install
       - name: Use OIDC-capable npm
-        run: sudo npm install -g npm@latest
+        run: sudo npm install -g npm@11
       - uses: changesets/action@v1
         with:
           publish: bun run changeset:release
