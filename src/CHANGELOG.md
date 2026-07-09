@@ -1,5 +1,11 @@
 # @rhinestone/relayer-sdk
 
+## 0.3.8
+
+### Patch Changes
+
+- d731a24: Dry-run release to verify npm trusted publishing.
+
 ## 0.3.7
 
 ### Patch Changes
