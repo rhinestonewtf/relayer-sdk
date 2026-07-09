@@ -18,6 +18,14 @@ jobs:
       - run: bun install
       - name: Use OIDC-capable npm
         run: sudo npm install -g npm@11
+      - name: Mint npm OIDC token
+        run: |
+          RESPONSE=$(curl -sSf \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=npm:registry.npmjs.org")
+          NPM_ID_TOKEN=$(node -e 'let data = ""; process.stdin.on("data", chunk => data += chunk); process.stdin.on("end", () => process.stdout.write(JSON.parse(data).value));' <<< "$RESPONSE")
+          echo "::add-mask::$NPM_ID_TOKEN"
+          echo "NPM_ID_TOKEN=$NPM_ID_TOKEN" >> "$GITHUB_ENV"
       - uses: changesets/action@v1
         with:
           publish: bun run changeset:release
