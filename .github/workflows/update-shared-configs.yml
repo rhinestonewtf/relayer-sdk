@@ -48,7 +48,9 @@ jobs:
         if: steps.check.outputs.skip != 'true'
         run: |
           git checkout -b "${{ steps.resolve.outputs.branch }}"
-          bun add @rhinestone/shared-configs@${{ steps.resolve.outputs.version }}
+          bun add --exact @rhinestone/shared-configs@${{ steps.resolve.outputs.version }}
+          cd src
+          bun add "@rhinestone/shared-configs@^${{ steps.resolve.outputs.version }}"
 
       - name: Commit and push
         if: steps.check.outputs.skip != 'true'
@@ -56,7 +58,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package.json bun.lock
+          git add package.json src/package.json bun.lock
 
           if git diff --cached --quiet; then
             echo "Already up to date"
