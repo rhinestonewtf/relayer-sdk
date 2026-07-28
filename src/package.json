@@ -41,6 +41,6 @@
     "viem": "^2.38.0"
   },
   "dependencies": {
-    "@rhinestone/shared-configs": "^1.4.122"
+    "@rhinestone/shared-configs": "^1.7.17"
   }
 }
