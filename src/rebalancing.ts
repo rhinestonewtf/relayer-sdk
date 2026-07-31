@@ -7,6 +7,7 @@ import {
   sliceHex,
 } from 'viem'
 import { parseAddress } from './address'
+import { applyAttribution, splitAttribution } from './attribution'
 import {
   ContextMismatchError,
   UnsupportedAdapterError,
@@ -67,6 +68,23 @@ const DEFAULT_INTENT_EXECUTOR_ADDRESS = parseAddress(
  * ```
  */
 export function replaceRepaymentDestinations(
+  to: Address,
+  data: Hex,
+  destination: RepaymentDestination,
+  config?: RebalancingConfig,
+): Hex {
+  // This function decodes and RE-ENCODES the call, and an ABI round-trip drops
+  // trailing bytes silently. Detach any ERC-8021 attribution suffix first and
+  // reattach it to the result, so callers can apply attribution in any order
+  // instead of having to know that this particular rewrite would eat it.
+  const { payload, suffix } = splitAttribution(data)
+  return applyAttribution(
+    replaceRepaymentDestinationsInner(to, payload, destination, config),
+    suffix,
+  )
+}
+
+function replaceRepaymentDestinationsInner(
   to: Address,
   data: Hex,
   destination: RepaymentDestination,

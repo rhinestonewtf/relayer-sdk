@@ -1,10 +1,24 @@
 // Adapters
 // biome-ignore lint/performance/noBarrelFile: Package entry point requires re-exports
 export { adapters } from './adapters'
+// ERC-8021 transaction attribution
+export {
+  ATTRIBUTION_SCHEMA_CANONICAL_REGISTRY,
+  ATTRIBUTION_SCHEMA_CBOR,
+  ATTRIBUTION_SCHEMA_CUSTOM_REGISTRY,
+  applyAttribution,
+  assertValidAttributionSuffix,
+  attributionGasOverhead,
+  ERC8021_MARKER,
+  encodeAttributionSuffix,
+  hasAttribution,
+  splitAttribution,
+} from './attribution'
 // Errors
 export {
   ContextMismatchError,
   InvalidAddressError,
+  InvalidAttributionSuffixError,
   isRelayerError,
   isValidationError,
   RelayerError,

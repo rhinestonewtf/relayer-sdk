@@ -114,6 +114,24 @@ export class InvalidAddressError extends RelayerError {
 }
 
 /**
+ * Error thrown when an ERC-8021 attribution suffix is malformed.
+ *
+ * Raised before the suffix is appended to calldata we are about to sign: a
+ * malformed suffix means either misattributed activity or, if a downstream
+ * consumer splits it back off at the wrong boundary, corrupted calldata. Both
+ * are worse than failing the action.
+ */
+export class InvalidAttributionSuffixError extends RelayerError {
+  constructor(params: { reason: string; suffix?: Hex }) {
+    super({
+      message: `Invalid ERC-8021 attribution suffix: ${params.reason}`,
+      context: params,
+      errorType: 'InvalidAttributionSuffixError',
+    })
+  }
+}
+
+/**
  * Type guard to check if an error is a RelayerError.
  */
 export function isRelayerError(err: unknown): err is RelayerError {
