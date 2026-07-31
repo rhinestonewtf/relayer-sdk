@@ -190,8 +190,16 @@ export function splitAttribution(data: Hex): {
   if (size === undefined) return none
 
   const cut = hex.length - size * 2
-  // Never cut into the 4-byte function selector.
-  if (cut < 8) return none
+  // Only guard against cutting past the start of the calldata. An earlier
+  // version also required a 4-byte selector to survive, which broke the property
+  // that matters most here: split(apply(x)) === x. Attribution is legal on any
+  // calldata, including a bare value transfer with an empty payload, and a
+  // splitter that cannot round-trip its own output silently drops attribution
+  // for those. The selector guard bought almost nothing against a false-positive
+  // marker match either — a 16-byte marker collision is ~2^-128, and it only
+  // helped in the sliver of cases where the bogus suffix nearly spanned the
+  // whole calldata.
+  if (cut < 0) return none
 
   return {
     payload: `0x${hex.slice(0, cut)}` as Hex,

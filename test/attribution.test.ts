@@ -126,10 +126,24 @@ describe('splitAttribution', () => {
     expect(splitAttribution(unknown).suffix).toBeUndefined()
   })
 
-  it('refuses to cut into the 4-byte selector', () => {
+  it('refuses to cut past the start of the calldata', () => {
     // codesLength claims 0xff bytes of codes, far more than the calldata holds.
     const overlong = `0xdeadbeefff0080218021802180218021802180218021` as const
     expect(splitAttribution(overlong).payload).toBe(overlong)
+  })
+
+  it.each([
+    ['empty', '0x'],
+    ['shorter than a selector', '0xdead'],
+    ['exactly a selector', '0xdeadbeef'],
+  ])('round-trips a %s payload', (_name, payload) => {
+    // Attribution is legal on any calldata, including a bare value transfer with
+    // no payload at all. A splitter that cannot round-trip its own output would
+    // silently drop attribution on those — and, via the suffix-preserving
+    // rewrite, on anything built from them.
+    expect(
+      splitAttribution(applyAttribution(payload as never, BASEAPP)),
+    ).toEqual({ payload, suffix: BASEAPP })
   })
 })
 
