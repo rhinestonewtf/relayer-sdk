@@ -64,6 +64,12 @@ await signAndSubmit({ to, value, data, gasLimit })
 ```
 
 If you'd rather not take the dependency, the equivalent is `data + suffix.slice(2)`.
+
+`assertValidAttributionSuffix` (which `applyAttribution` calls for you) accepts
+only schemas this package can fully verify — schema 0 and schema 1. Schema 2
+(CBOR) is declined rather than waved through, because approving a payload we
+never decoded is a false assurance. We only emit schema 0, so this affects
+nothing today.
 `applyAttribution` additionally refuses to append twice (two markers would make
 the outer one authoritative and misattribute the transaction) and rejects a
 malformed suffix rather than signing calldata with garbage on the end.

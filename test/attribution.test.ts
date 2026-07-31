@@ -104,7 +104,8 @@ describe('splitAttribution', () => {
     ['schema 0, multiple codes', TWO_CODES],
     ['schema 0, no codes', NO_CODES],
     ['schema 1', SCHEMA_1_SUFFIX],
-    ['schema 2', SCHEMA_2_SUFFIX],
+    // schema 2 is deliberately absent: applyAttribution declines to append one.
+    // Its split is covered directly in the assertValidAttributionSuffix block.
   ])('round-trips %s: split(apply(x)) === x', (_name, suffix) => {
     expect(splitAttribution(applyAttribution(payload, suffix))).toEqual({
       payload,
@@ -151,9 +152,28 @@ describe('assertValidAttributionSuffix', () => {
   it.each([
     ['schema 0', BASEAPP],
     ['schema 1', SCHEMA_1_SUFFIX],
-    ['schema 2', SCHEMA_2_SUFFIX],
   ])('accepts a well-formed %s suffix', (_name, suffix) => {
     expect(() => assertValidAttributionSuffix(suffix)).not.toThrow()
+  })
+
+  it('declines to append a schema-2 (CBOR) suffix', () => {
+    // Not because it is malformed — this one is a valid ox vector — but because
+    // verifying CBOR contents is out of scope here, and approving a payload we
+    // never read is a false assurance: the blob would ride on-chain, cost gas
+    // and be skipped by decoders.
+    expect(() => assertValidAttributionSuffix(SCHEMA_2_SUFFIX)).toThrow(/CBOR/)
+  })
+
+  it('still MEASURES schema 2, so an existing one survives a rewrite', () => {
+    // Declining to append is not the same as failing to understand. splitAttribution
+    // must keep round-tripping schema 2 or replaceRepaymentDestinations would
+    // silently drop a suffix that reached the calldata some other way.
+    const payload = '0xdeadbeefcafebabe'
+    const attributed = `${payload}${SCHEMA_2_SUFFIX.slice(2)}` as const
+    expect(splitAttribution(attributed)).toEqual({
+      payload,
+      suffix: SCHEMA_2_SUFFIX,
+    })
   })
 
   it('rejects a suffix without the marker', () => {

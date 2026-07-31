@@ -264,6 +264,18 @@ export function attributionGasOverhead(suffix: Hex | undefined): bigint {
  * Validates that a suffix is well-formed ERC-8021 before it is appended to
  * calldata we are about to sign.
  *
+ * Accepts only schemas whose contents this package can fully verify — today
+ * schema 0 and schema 1. **Schema 2 (CBOR) is rejected**, not because it is
+ * invalid, but because verifying it means decoding arbitrary CBOR, and a
+ * validator that waves through a payload it cannot read gives a false
+ * assurance: the blob rides on-chain, costs gas, and is skipped by decoders. A
+ * calldata-rewriting package is the wrong place for a CBOR decoder, so the
+ * honest position is to decline rather than to pretend. If we ever emit CBOR
+ * attribution, implement the check here at that point.
+ *
+ * Note this can only ever be a STRUCTURAL guarantee. No amount of local
+ * validation proves a code is registered or that an indexer will credit it.
+ *
  * @throws {InvalidAttributionSuffixError}
  */
 export function assertValidAttributionSuffix(suffix: Hex): void {
@@ -293,6 +305,15 @@ export function assertValidAttributionSuffix(suffix: Hex): void {
   if (measured !== size) {
     reject(
       `length prefix describes ${measured} bytes but the suffix is ${size}`,
+    )
+  }
+
+  // See the doc comment: we can measure a schema-2 suffix (so splitAttribution
+  // preserves one that arrives from elsewhere) but we cannot read its CBOR, so
+  // we decline to append one rather than vouch for contents we never inspected.
+  if (schemaIdOf(body(suffix)) === ATTRIBUTION_SCHEMA_CBOR) {
+    reject(
+      'schema 2 (CBOR) contents cannot be verified by this package; refusing to append an unvalidated suffix',
     )
   }
 
