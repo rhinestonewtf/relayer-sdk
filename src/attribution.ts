@@ -100,10 +100,35 @@ export function hasAttribution(data: Hex): boolean {
   return hex.length >= MIN_SUFFIX_BYTES * 2 && hex.endsWith(MARKER_BODY)
 }
 
+/** The schema id of a suffix, read from the byte preceding the marker. */
+function schemaIdOf(hex: string): number {
+  return readUint(hex, hex.length / 2 - MARKER_BYTES, SCHEMA_ID_BYTES)
+}
+
+/**
+ * Schema 1's `chainIdLength`, i.e. how many bytes of chain id precede it.
+ * `undefined` if the suffix is too short to carry one.
+ */
+function schema1ChainIdLength(hex: string): number | undefined {
+  const total = hex.length / 2
+  const codesLengthEnd = total - (MARKER_BYTES + SCHEMA_ID_BYTES)
+  if (codesLengthEnd < 1) return undefined
+  const codesLength = readUint(hex, codesLengthEnd, 1)
+  const chainIdLengthEnd = codesLengthEnd - 1 - codesLength
+  if (chainIdLengthEnd < 1) return undefined
+  return readUint(hex, chainIdLengthEnd, 1)
+}
+
 /**
  * Total suffix size in bytes, walked backwards from the end of `hex`, or
  * `undefined` if the schema is one we cannot measure (a schema added after this
  * version) or the encoding is inconsistent.
+ *
+ * Pure measurement — it answers "where does the suffix begin", not "is this
+ * suffix meaningful". Semantic checks belong in `assertValidAttributionSuffix`:
+ * `splitAttribution` must be able to measure anything it might be handed, since
+ * mis-measuring corrupts real calldata, which is far worse than reattaching a
+ * degenerate suffix unchanged.
  */
 function suffixSize(hex: string): number | undefined {
   const total = hex.length / 2
@@ -261,5 +286,16 @@ export function assertValidAttributionSuffix(suffix: Hex): void {
     reject(
       `length prefix describes ${measured} bytes but the suffix is ${size}`,
     )
+  }
+
+  // Schema 1 resolves its codes against a registry identified by (address,
+  // chainId). A zero-length chain id names no chain, so the registry cannot be
+  // resolved and external parsers reject it — the suffix would ride on-chain and
+  // attribute nothing. Structurally measurable but semantically useless, so it
+  // is caught here rather than in suffixSize, which must stay pure measurement.
+  if (schemaIdOf(body(suffix)) === ATTRIBUTION_SCHEMA_CUSTOM_REGISTRY) {
+    if (schema1ChainIdLength(body(suffix)) === 0) {
+      reject('schema 1 requires a non-empty registry chain id')
+    }
   }
 }

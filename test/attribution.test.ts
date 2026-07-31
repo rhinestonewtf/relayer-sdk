@@ -166,6 +166,23 @@ describe('assertValidAttributionSuffix', () => {
     expect(() => assertValidAttributionSuffix(lying)).toThrow(/length prefix/)
   })
 
+  it('rejects a schema-1 suffix with a zero-length registry chain id', () => {
+    // Structurally measurable, but it names no chain, so the registry cannot be
+    // resolved and external parsers reject it. Approving it would let a suffix
+    // ride on-chain and attribute nothing — the exact failure this validator
+    // exists to prevent.
+    // registry(20) | chainId(0 bytes) | chainIdLength(0x00) | codes(14) |
+    // codesLength(0x0e) | schemaId(0x01) | marker.
+    const noChainId =
+      '0xcccccccccccccccccccccccccccccccccccccccc00626173656170702c6d6f7270686f0e0180218021802180218021802180218021'
+
+    expect(() => assertValidAttributionSuffix(noChainId)).toThrow(/chain id/)
+  })
+
+  it('still accepts a schema-1 suffix that carries a chain id', () => {
+    expect(() => assertValidAttributionSuffix(SCHEMA_1_SUFFIX)).not.toThrow()
+  })
+
   it('rejects an unrecognised schema', () => {
     const unknown = `0x0009${ERC8021_MARKER.slice(2)}` as const
     expect(() => assertValidAttributionSuffix(unknown)).toThrow(/unrecognised/)
