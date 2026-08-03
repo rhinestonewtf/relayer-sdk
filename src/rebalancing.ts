@@ -7,7 +7,7 @@ import {
   sliceHex,
 } from 'viem'
 import { parseAddress } from './address'
-import { applyAttribution, splitAttribution } from './attribution'
+import { reattachAttribution, splitAttribution } from './attribution'
 import {
   ContextMismatchError,
   UnsupportedAdapterError,
@@ -78,7 +78,10 @@ export function replaceRepaymentDestinations(
   // reattach it to the result, so callers can apply attribution in any order
   // instead of having to know that this particular rewrite would eat it.
   const { payload, suffix } = splitAttribution(data)
-  return applyAttribution(
+  // Reattach, do not re-apply: we are restoring bytes that were already in the
+  // caller's calldata, so `applyAttribution`'s validity checks (which govern
+  // whether we would ADD attribution) must not get a vote on whether we keep it.
+  return reattachAttribution(
     replaceRepaymentDestinationsInner(to, payload, destination, config),
     suffix,
   )

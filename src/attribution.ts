@@ -208,6 +208,28 @@ export function splitAttribution(data: Hex): {
 }
 
 /**
+ * Restores a suffix that {@link splitAttribution} detached from this very
+ * calldata — internal to the suffix-preserving rewrite, not part of the public
+ * API.
+ *
+ * Deliberately performs NO validation, unlike {@link applyAttribution}.
+ * Reattaching is not appending: these bytes were already in the caller's
+ * calldata before we touched it. Dropping them because we would decline to *add*
+ * them ourselves silently rewrites someone else's transaction — and the two
+ * judgements are genuinely different, which is why a schema this package can
+ * measure but not vouch for (schema 2) must still survive a rewrite untouched.
+ *
+ * @internal
+ */
+export function reattachAttribution(
+  payload: Hex,
+  suffix: Hex | undefined,
+): Hex {
+  if (!suffix || suffix === '0x') return payload
+  return `0x${body(payload)}${body(suffix)}` as Hex
+}
+
+/**
  * Whether a suffix is one we will actually append: present, well-formed, and of
  * a schema this package can verify. Shared by {@link applyAttribution} and
  * {@link attributionGasOverhead} so the gas we budget always matches the bytes
