@@ -75,10 +75,22 @@ describe('applyAttribution', () => {
     expect(applyAttribution(once, BASEAPP)).toBe(once)
   })
 
-  it('throws rather than appending a malformed suffix', () => {
-    expect(() => applyAttribution(data, '0xdeadbeef')).toThrow(
-      InvalidAttributionSuffixError,
-    )
+  // Never fails a transaction. This runs inside relayers we do not operate, and a
+  // bad suffix could only come from a bug on the publishing side — so it must
+  // cost an attribution, not a fill. The strictness would not have been
+  // protective either: a malformed suffix is inert trailing calldata.
+  it.each([
+    ['malformed', '0xdeadbeef'],
+    ['not hex', '0xzzzz'],
+    ['marker only', '0x80218021802180218021802180218021'],
+    ['unverifiable schema (CBOR)', SCHEMA_2_SUFFIX],
+  ])('skips a %s suffix instead of throwing', (_name, bad) => {
+    expect(applyAttribution(data, bad as never)).toBe(data)
+  })
+
+  it('budgets no gas for a suffix it will skip', () => {
+    // Otherwise the gas limit is inflated for bytes that never reach the wire.
+    expect(attributionGasOverhead('0xdeadbeef' as never)).toBe(0n)
   })
 })
 

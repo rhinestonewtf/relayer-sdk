@@ -18,7 +18,6 @@
   detaches and reattaches the suffix around its own re-encode, making the two
   composable in either order.
 
-  See ATTRIBUTION.md for the relayer integration guide.
 
 ## 0.3.8
 

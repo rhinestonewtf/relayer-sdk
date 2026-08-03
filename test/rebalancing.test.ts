@@ -180,3 +180,49 @@ describe('ERC-8021 attribution across repayment rewriting', () => {
     expect(splitAttribution(attributed).payload).toEqual(plain)
   })
 })
+
+describe('a rewrite preserves suffixes it would decline to add', () => {
+  const destination = {
+    address: parseAddress('0xdead00000000000000000000000000000000beef'),
+    chain: 0x069,
+  }
+  // Schema 2 (CBOR): splitAttribution can MEASURE it, but
+  // assertValidAttributionSuffix declines to vouch for contents this package
+  // cannot decode, so applyAttribution would skip it.
+  const SCHEMA_2 =
+    '0xa161616762617365617070000b0280218021802180218021802180218021'
+
+  it('carries a schema-2 suffix through the rewrite untouched', () => {
+    // Reattaching is not appending. These bytes were already in the caller's
+    // calldata; dropping them because we would decline to ADD them ourselves
+    // would silently rewrite someone else's transaction.
+    const attributed = `${sameChainFill}${SCHEMA_2.slice(2)}` as const
+
+    const rewritten = replaceRepaymentDestinations(
+      ROUTER_ADDRESS_DEV,
+      attributed,
+      destination,
+      devConfig,
+    )
+
+    expect(hasAttribution(rewritten)).toBe(true)
+    expect(splitAttribution(rewritten).suffix).toEqual(SCHEMA_2)
+  })
+
+  it('still leaves the rewritten payload identical to an unattributed rewrite', () => {
+    const plain = replaceRepaymentDestinations(
+      ROUTER_ADDRESS_DEV,
+      sameChainFill,
+      destination,
+      devConfig,
+    )
+    const attributed = replaceRepaymentDestinations(
+      ROUTER_ADDRESS_DEV,
+      `${sameChainFill}${SCHEMA_2.slice(2)}` as const,
+      destination,
+      devConfig,
+    )
+
+    expect(splitAttribution(attributed).payload).toEqual(plain)
+  })
+})
