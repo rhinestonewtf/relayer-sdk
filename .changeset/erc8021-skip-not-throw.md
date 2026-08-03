@@ -1,5 +1,5 @@
 ---
-'@rhinestone/relayer-sdk': minor
+'@rhinestone/relayer-sdk': patch
 ---
 
 `applyAttribution` no longer throws on a malformed suffix — it skips it and
