@@ -208,6 +208,22 @@ export function splitAttribution(data: Hex): {
 }
 
 /**
+ * Whether a suffix is one we will actually append: present, well-formed, and of
+ * a schema this package can verify. Shared by {@link applyAttribution} and
+ * {@link attributionGasOverhead} so the gas we budget always matches the bytes
+ * we add.
+ */
+function isAppendable(suffix: Hex | undefined): suffix is Hex {
+  if (!suffix || suffix === '0x') return false
+  try {
+    assertValidAttributionSuffix(suffix)
+    return true
+  } catch {
+    return false
+  }
+}
+
+/**
  * Appends an ERC-8021 attribution suffix to transaction calldata.
  *
  * MUST be the last transform applied before signing. Anything that decodes and
@@ -215,24 +231,35 @@ export function splitAttribution(data: Hex): {
  * {@link replaceRepaymentDestinations} in this package is suffix-preserving, so
  * the two compose in either order; a rewrite of your own is not.
  *
- * No-ops when `suffix` is undefined or empty, and refuses to append a second
- * suffix when one is already present — two markers would make the outer one
- * authoritative and misattribute the transaction.
+ * **Never throws, and never fails a transaction.** A missing, malformed or
+ * unverifiable suffix is SKIPPED and the calldata returned unchanged. Attribution
+ * is reporting; it must never be a precondition for filling an intent. This
+ * function runs inside relayers we do not operate, so a bad suffix — which could
+ * only come from a bug on the publishing side — must cost an attribution, not a
+ * fill. Nor is the strictness protective: a malformed suffix is inert trailing
+ * calldata, so appending it is harmless, just useless.
+ *
+ * Callers who want to know rather than proceed can call
+ * {@link assertValidAttributionSuffix} themselves, or compare
+ * {@link hasAttribution} before and after.
+ *
+ * Also refuses to append a second suffix when one is already present — two
+ * markers would make the outer one authoritative and misattribute the
+ * transaction.
  *
  * @param data - The finished calldata.
- * @param suffix - Typically `RelayerActionV1.metadata.attributionSuffix`.
- * @throws {InvalidAttributionSuffixError} if `suffix` is malformed. Failing the
- *   action is better than broadcasting calldata with garbage appended.
+ * @param suffix - Typically the entry for this chain in
+ *   `RelayerActionV1.metadata.attributionSuffixByChain`.
  *
  * @example
  * ```ts
- * const data = applyAttribution(finalCalldata, action.metadata.attributionSuffix)
+ * const suffix = action.metadata.attributionSuffixByChain?.[String(chainId)]
+ * const data = applyAttribution(finalCalldata, suffix)
  * await signAndSend({ to, value, data })
  * ```
  */
 export function applyAttribution(data: Hex, suffix: Hex | undefined): Hex {
-  if (!suffix || suffix === '0x') return data
-  assertValidAttributionSuffix(suffix)
+  if (!isAppendable(suffix)) return data
   if (hasAttribution(data)) return data
   return `0x${body(data)}${body(suffix)}` as Hex
 }
@@ -251,7 +278,10 @@ export function applyAttribution(data: Hex, suffix: Hex | undefined): Hex {
  * Excludes the L2 data fee on rollups, which is priced per chain.
  */
 export function attributionGasOverhead(suffix: Hex | undefined): bigint {
-  if (!suffix || suffix === '0x') return 0n
+  // Gated on the same predicate as applyAttribution: a suffix that will be
+  // skipped costs nothing, so budgeting for it would inflate the gas limit for
+  // bytes that never reach the wire.
+  if (!isAppendable(suffix)) return 0n
   const hex = body(suffix)
   let gas = 0n
   for (let i = 0; i < hex.length; i += 2) {
