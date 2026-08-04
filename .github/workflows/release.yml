@@ -15,7 +15,7 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: 9
-      - run: bun install
+      - run: bun install --frozen-lockfile
       - name: Use OIDC-capable npm
         # npm >= 11.5.1 does the OIDC token exchange itself (needs id-token:
         # write above); no manual token minting required.
