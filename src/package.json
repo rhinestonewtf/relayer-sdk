@@ -38,9 +38,9 @@
     "access": "public"
   },
   "peerDependencies": {
-    "viem": "^2.38.0"
+    "viem": "^2.55.0"
   },
   "dependencies": {
-    "@rhinestone/shared-configs": "^1.4.122"
+    "@rhinestone/shared-configs": "^1.10.1"
   }
 }
