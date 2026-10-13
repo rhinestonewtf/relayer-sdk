@@ -1,5 +1,14 @@
 # @rhinestone/relayer-sdk
 
+## 0.4.2
+
+### Patch Changes
+
+- c9eb83e: Recognise the SwapAdapter's `handleFill_swapAdapter_exactIn` and
+  `handleFill_swapAdapter_exactOut` in route fills. A deferred destination swap's
+  child fill no longer throws `UnsupportedAdapterError`; the SwapAdapter takes no
+  relayer context, so its call passes through unchanged.
+
 ## 0.4.1
 
 ### Patch Changes
