@@ -181,6 +181,8 @@ const adapterRelayerContextMap: {
   intentExecutorWithGasRefundAbi: lookup(SameChainRepaymentsRelayerContext),
   relayAbi: lookup(NoRelayerContext),
   oftFeeAbi: lookup(NoRelayerContext),
+  // ADAPTER_TAG() sets skipRelayerContext, so the Router appends none.
+  swapAbi: lookup(NoRelayerContext),
 }
 
 function buildSelectorToAdapterCallMap(): { [key: Hex]: AdapterCall } {
