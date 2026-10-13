@@ -1,7 +1,9 @@
-import { contractAddressesDev } from '@rhinestone/shared-configs'
+import { contractAddressesDev, routerAbi } from '@rhinestone/shared-configs'
+import { encodeAbiParameters, encodeFunctionData } from 'viem'
 import { describe, expect, it } from 'vitest'
 import {
   AcrossRepaymentsRelayerContext,
+  adapters,
   applyAttribution,
   encodeAttributionSuffix,
   functionSelectorToAdapterCallMap,
@@ -114,6 +116,69 @@ describe('Selector matches', () => {
     const rewritef =
       functionSelectorToAdapterCallMap['0xdfc3f395'].rewriteRelayerContext
     expect(rewritef).toBeDefined()
+  })
+})
+
+describe('SwapAdapter', () => {
+  it.each([
+    ['0xddbe3817', 'handleFill_swapAdapter_exactIn'],
+    ['0x2a4f174c', 'handleFill_swapAdapter_exactOut'],
+  ] as const)('resolves %s to %s', (selector, functionName) => {
+    expect(functionSelectorToAdapterCallMap[selector]).toMatchObject({
+      adapterName: 'swapAbi',
+      functionName,
+    })
+  })
+
+  // The shape of a deferred destination swap's child fill: the IntentExecutor
+  // fill, then the swap. Neither adapter takes a relayer context.
+  it('passes a route fill ending in an exact-out swap through unchanged', () => {
+    const intentExecutorFill = encodeFunctionData({
+      abi: adapters.intentExecutorAbi,
+      functionName: 'handleFill_intentExecutor_executeSinglechainOps',
+      args: ['0x1234'],
+    })
+    const swapFill = encodeFunctionData({
+      abi: adapters.swapAbi,
+      functionName: 'handleFill_swapAdapter_exactOut',
+      args: [
+        parseAddress('0x1111111111111111111111111111111111111111'),
+        parseAddress('0x6666666666666666666666666666666666666666'),
+        120n,
+        parseAddress('0x7777777777777777777777777777777777777777'),
+        100n,
+        110n,
+        42n,
+        [
+          {
+            target: parseAddress('0x8888888888888888888888888888888888888888'),
+            value: 0n,
+            data: '0xabcd',
+          },
+        ],
+      ],
+    })
+    const routeFill = encodeFunctionData({
+      abi: routerAbi,
+      functionName: 'optimized_routeFill921336808',
+      args: [
+        [],
+        encodeAbiParameters(
+          [{ type: 'bytes[]' }],
+          [[intentExecutorFill, swapFill]],
+        ),
+        '0xdeadbeef',
+      ],
+    })
+
+    const rewritten = replaceRepaymentDestinations(
+      ROUTER_ADDRESS_DEV,
+      routeFill,
+      { address: parseAddress('0xdead00000000000000000000000000000000beef') },
+      devConfig,
+    )
+
+    expect(rewritten).toEqual(routeFill)
   })
 })
 
