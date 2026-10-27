@@ -29,6 +29,9 @@ const DEFAULT_ROUTER_ADDRESS = parseAddress(contractAddresses['*'].router)
 const DEFAULT_INTENT_EXECUTOR_ADDRESS = parseAddress(
   contractAddresses['*'].intentExecutor,
 )
+const DEFAULT_MULTICALL_HANDLER_ADDRESS = parseAddress(
+  contractAddresses['*'].multicallHandler,
+)
 
 /**
  * Rewrites repayment destinations inside router-encoded intent calldata.
@@ -101,6 +104,9 @@ function replaceRepaymentDestinationsInner(
   const intentExecutorAddress = config?.intentExecutorAddress
     ? parseAddress(config.intentExecutorAddress)
     : DEFAULT_INTENT_EXECUTOR_ADDRESS
+  const multicallHandlerAddress = config
+    ? parseAddress(config.multicallHandlerAddress)
+    : DEFAULT_MULTICALL_HANDLER_ADDRESS
   const normalizedDestination: InternalRepaymentDestination = {
     address: parseAddress(destination.address),
     chain: destination.chain,
@@ -157,10 +163,14 @@ function replaceRepaymentDestinationsInner(
           })
         }
         const currentContext = relayerContextData[contextIndex]
-        relayerContextData[contextIndex] = rewriteF(
-          currentContext,
-          normalizedDestination,
-        )
+        // A context naming the multicall handler sends the user's input to the
+        // handler, which runs the destination ops; it is not a repayment.
+        if (currentContext.toLowerCase() !== multicallHandlerAddress) {
+          relayerContextData[contextIndex] = rewriteF(
+            currentContext,
+            normalizedDestination,
+          )
+        }
         contextIndex++
       }
     }

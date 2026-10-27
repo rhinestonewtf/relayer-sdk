@@ -45,6 +45,9 @@ import { contractAddressesDev } from '@rhinestone/shared-configs'
 const config: RebalancingConfig = {
   routerAddress: parseAddress(contractAddressesDev['*'].router),
   intentExecutorAddress: parseAddress(contractAddressesDev['*'].intentExecutor),
+  multicallHandlerAddress: parseAddress(
+    contractAddressesDev['*'].multicallHandler,
+  ),
 }
 
 const rewritten = replaceRepaymentDestinations(
