@@ -31,7 +31,7 @@ export type RepaymentDestination = {
 export type RebalancingConfig = {
   routerAddress: Address
   intentExecutorAddress: Address
-  multicallHandlerAddress?: Address
+  multicallHandlerAddress: Address
 }
 
 /**

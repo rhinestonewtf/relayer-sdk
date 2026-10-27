@@ -18,11 +18,14 @@ const ROUTER_ADDRESS_DEV = parseAddress(contractAddressesDev['*'].router)
 const INTENT_EXECUTOR_ADDRESS_DEV = parseAddress(
   contractAddressesDev['*'].intentExecutor,
 )
+const MULTICALL_HANDLER_ADDRESS_DEV = parseAddress(
+  contractAddressesDev['*'].multicallHandler,
+)
 
 const devConfig: RebalancingConfig = {
   routerAddress: ROUTER_ADDRESS_DEV,
   intentExecutorAddress: INTENT_EXECUTOR_ADDRESS_DEV,
-  multicallHandlerAddress: contractAddressesDev['*'].multicallHandler,
+  multicallHandlerAddress: MULTICALL_HANDLER_ADDRESS_DEV,
 }
 
 const sameChainFill =

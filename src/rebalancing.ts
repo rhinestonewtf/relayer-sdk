@@ -104,7 +104,7 @@ function replaceRepaymentDestinationsInner(
   const intentExecutorAddress = config?.intentExecutorAddress
     ? parseAddress(config.intentExecutorAddress)
     : DEFAULT_INTENT_EXECUTOR_ADDRESS
-  const multicallHandlerAddress = config?.multicallHandlerAddress
+  const multicallHandlerAddress = config
     ? parseAddress(config.multicallHandlerAddress)
     : DEFAULT_MULTICALL_HANDLER_ADDRESS
   const normalizedDestination: InternalRepaymentDestination = {
