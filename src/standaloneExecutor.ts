@@ -5,15 +5,16 @@ import {
   type Hex,
   toFunctionSelector,
 } from 'viem'
+import { intentExecutorExpAbi } from './intentExecutorExp'
 import type { InternalRepaymentDestination } from './types'
+
+const executorAbi = [...intentExecutorAbi, ...intentExecutorExpAbi] as const
 
 // Build selector set for gas refund functions
 const gasRefundSelectors: Set<Hex> = new Set(
-  intentExecutorAbi
+  executorAbi
     .filter(
-      (
-        item,
-      ): item is (typeof intentExecutorAbi)[number] & { type: 'function' } =>
+      (item): item is (typeof executorAbi)[number] & { type: 'function' } =>
         item.type === 'function' && item.name.includes('WithGasRefund'),
     )
     .map((item) => toFunctionSelector(item)),
@@ -43,7 +44,7 @@ export function rewriteStandaloneExecutorCall(
   }
 
   const decoded = decodeFunctionData({
-    abi: intentExecutorAbi,
+    abi: executorAbi,
     data,
   })
 
@@ -52,7 +53,7 @@ export function rewriteStandaloneExecutorCall(
   args[args.length - 1] = destination.address
 
   return encodeFunctionData({
-    abi: intentExecutorAbi,
+    abi: executorAbi,
     functionName: decoded.functionName,
     args: args as never,
   })

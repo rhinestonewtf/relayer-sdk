@@ -11,6 +11,10 @@ import {
   singleCallAbi,
   singlecallAdapterAbi,
 } from '@rhinestone/shared-configs'
+import {
+  intentExecutorExpAdapterAbi,
+  intentExecutorExpAdapterGasRefundAbi,
+} from './intentExecutorExp'
 
 const swapCallComponents = [
   { name: 'target', type: 'address' },
@@ -69,6 +73,8 @@ export const adapters = {
   acrossAbi: acrossAdapterAbi,
   intentExecutorAbi: intentExecutorAdapterAbi,
   intentExecutorWithGasRefundAbi: intentExecutorAdapterGasRefundAbi,
+  intentExecutorExpAbi: intentExecutorExpAdapterAbi,
+  intentExecutorExpWithGasRefundAbi: intentExecutorExpAdapterGasRefundAbi,
   relayAbi: relayAdapterAbi,
   oftFeeAbi: oftFeeAdapterAbi,
   swapAbi: swapAdapterAbi,
