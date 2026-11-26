@@ -36,19 +36,6 @@ const executeWithGasRefundOutputs = [
 export const intentExecutorExpAbi = [
   {
     type: 'function',
-    name: 'executeMultichainOpsExp',
-    stateMutability: 'nonpayable',
-    inputs: [
-      {
-        name: 'signedOps',
-        type: 'tuple',
-        components: multiChainOpsExpComponents,
-      },
-    ],
-    outputs: [],
-  },
-  {
-    type: 'function',
     name: 'executeMultichainOpsExpWithGasRefund_ERC20',
     stateMutability: 'nonpayable',
     inputs: [
@@ -76,19 +63,6 @@ export const intentExecutorExpAbi = [
       { name: 'gasRefundRecipient', type: 'address' },
     ],
     outputs: executeWithGasRefundOutputs,
-  },
-  {
-    type: 'function',
-    name: 'executeSinglechainOpsExp',
-    stateMutability: 'nonpayable',
-    inputs: [
-      {
-        name: 'signedOps',
-        type: 'tuple',
-        components: singleChainOpsExpComponents,
-      },
-    ],
-    outputs: [],
   },
   {
     type: 'function',

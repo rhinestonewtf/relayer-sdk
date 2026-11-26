@@ -324,26 +324,4 @@ describe('rewriteStandaloneExecutorCall with Exp entrypoints', () => {
     expect(decoded.args.slice(0, -1)).toEqual(original.args.slice(0, -1))
     expect(decoded.args.at(-1)).toBe(NEW_RECIPIENT)
   })
-
-  it.each([
-    [
-      '0x7f602dc3',
-      encodeFunctionData({
-        abi: intentExecutorExpAbi,
-        functionName: 'executeSinglechainOpsExp',
-        args: [singleChainOpsExp],
-      }),
-    ],
-    [
-      '0xfba85265',
-      encodeFunctionData({
-        abi: intentExecutorExpAbi,
-        functionName: 'executeMultichainOpsExp',
-        args: [multiChainOpsExp],
-      }),
-    ],
-  ] as const)('returns %s unchanged', (selector, data) => {
-    expect(data.slice(0, 10)).toBe(selector)
-    expect(rewriteStandaloneExecutorCall(data, destination)).toBe(data)
-  })
 })
