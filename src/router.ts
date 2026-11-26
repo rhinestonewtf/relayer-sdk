@@ -179,6 +179,10 @@ const adapterRelayerContextMap: {
   acrossAbi: lookup(AcrossRepaymentsRelayerContext),
   intentExecutorAbi: lookup(NoRelayerContext),
   intentExecutorWithGasRefundAbi: lookup(SameChainRepaymentsRelayerContext),
+  // ADAPTER_TAG() sets skipRelayerContext, so the Router appends none.
+  intentExecutorExpAbi: lookup(NoRelayerContext),
+  // Reads the gas-refund recipient as a 20-byte packed relayer context.
+  intentExecutorExpWithGasRefundAbi: lookup(SameChainRepaymentsRelayerContext),
   relayAbi: lookup(NoRelayerContext),
   oftFeeAbi: lookup(NoRelayerContext),
   // ADAPTER_TAG() sets skipRelayerContext, so the Router appends none.
