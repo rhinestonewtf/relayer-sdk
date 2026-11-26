@@ -1,5 +1,11 @@
 # @rhinestone/relayer-sdk
 
+## 0.5.1
+
+### Patch Changes
+
+- ca035aa: Recognise IntentExecutorExpAdapter and IntentExecutorExpAdapterGasRefund route fills and the executor's `execute*OpsExpWithGasRefund_*` entrypoints, rewriting the gas-refund recipient as for the non-expiring ones.
+
 ## 0.5.0
 
 ### Minor Changes
